@@ -1,0 +1,24 @@
+<div class="main" fxLayoutAlign="center center" fxFlexFill >
+    <div fxLayout="column">
+<img src="https://www.accolite.com/assets/jpg/logo.png"  style="vertical-align:middle;margin:10px 0px">
+<mat-card fxFlex="28">
+    <mat-toolbar color="primary">TICKET MANAGEMENT SYSTEM</mat-toolbar>
+    <form fxLayoutAlign="stretch" fxLayout="column" [formGroup]="formGroup">
+        <mat-form-field >
+            <input matInput placeholder="Email" type="email" formControlName="email">
+        </mat-form-field>
+        <br>
+        <mat-form-field >
+            <input matInput placeholder="Password" type="password" formControlName="password">
+        </mat-form-field>
+        <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid" (click)="signin()">SIGN IN</button>
+        <br>
+        <mat-divider></mat-divider>
+        <a routerLink="/signup" fxLayoutAlign="center" mat-raised-button type="submit" color="primary">SIGN UP</a>
+    </form>
+    
+</mat-card>
+</div>
+
+
+</div>

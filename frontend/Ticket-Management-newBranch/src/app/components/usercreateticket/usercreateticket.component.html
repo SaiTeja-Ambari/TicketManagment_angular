@@ -1,0 +1,34 @@
+<p>
+    <mat-toolbar color="primary">
+
+        <a mat-button routerLink="/userhome">Welcome User!</a>
+        <div class="spacer"></div>
+        <a mat-button routerLink="/usercreateticket">Create Ticket</a>
+        <a mat-button routerLink="/" (click)="logout()">Log Out</a>
+
+    </mat-toolbar>
+</p>
+<div>
+    <mat-card  fxLayoutAlign= "center center">
+        <form fxLayoutAlign="center center" fxLayout="column" [formGroup]="formGroup" >
+            
+            <hr width="17%" size="8" align="center" color="blue">
+            
+            <mat-form-field >
+                <input matInput placeholder="Title" type="text" formControlName="title">
+            </mat-form-field>
+
+            <mat-form-field >
+                <input matInput placeholder="Description" type="text" formControlName="description">
+            </mat-form-field>
+            
+            <mat-form-field >
+                <input matInput placeholder=" Category ID" type="text" formControlName="categoryId">
+            </mat-form-field>
+        
+            <button mat-raised-button color="primary" (click)="submit()" type="button" >Submit</button>
+        </form>
+
+    </mat-card>
+</div>
+

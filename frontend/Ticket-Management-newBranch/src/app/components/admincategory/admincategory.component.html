@@ -1,0 +1,56 @@
+<div class="main">
+<p>
+    <mat-toolbar color="primary">
+      
+      <span>Category</span>
+
+      <div class="spacer"></div>
+    <a mat-button routerLink="/adminticket">Ticket</a>
+    <a mat-button routerLink="/admingroup">Group</a>
+    <a mat-button routerLink="/admincategory">Category</a>
+    <a mat-button routerLink="/" (click)="logout()">Log Out</a>
+    </mat-toolbar>
+  </p>
+
+    
+
+
+
+  <form fxLayoutAlign="center center" fxLayout="column" [formGroup]="formGroup">
+    <mat-form-field fxLayoutAlign="end">
+      <input (keyup)="applyFilter($event)" matInput placeholder="Search">
+    </mat-form-field>
+    <hr width="17%" size="8" align="center" color="blue">
+    <mat-form-field >
+        <input matInput placeholder=" Category Name" type="text" formControlName="name">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="add()" type="button" [disabled]="!formGroup.valid">Add</button>
+</form>
+
+
+
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  fxFlexFill>
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="categoryId">
+      <th mat-header-cell *matHeaderCellDef> S.No </th>
+      <td mat-cell *matCellDef="let element"> {{element.categoryId}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+  
+   
+    
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

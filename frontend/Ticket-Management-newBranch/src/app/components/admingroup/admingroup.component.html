@@ -1,0 +1,73 @@
+
+<div class="main">
+<p>
+  <mat-toolbar color="primary" style=" width: 100%;   top: 0;left: 0;z-index: 2;position: fixed;">
+      
+      <span>Group</span>
+
+      <div class="spacer"></div>
+    <a mat-button routerLink="/adminticket">Ticket</a>
+    <a mat-button routerLink="/admingroup">Group</a>
+    <a mat-button routerLink="/admincategory">Category</a>
+    <a mat-button routerLink="/" (click)=logout()>Log Out</a>
+    </mat-toolbar>
+  </p>
+    <br><br><br>
+  <form fxLayoutAlign="center center" fxLayout="column" [formGroup]="formGroup" >
+    <mat-form-field fxLayoutAlign="end">
+      <input (keyup)="applyFilter($event)" matInput placeholder="Search">
+    </mat-form-field>
+    <hr width="17%" size="8" align="center" color="blue">
+    <mat-form-field >
+        <input matInput placeholder=" Group Name" type="text" formControlName="name">
+    </mat-form-field>
+    <mat-form-field >
+      <input matInput placeholder=" Category ID" type="text" formControlName="categoryId">
+  </mat-form-field>
+  <mat-form-field >
+    <input matInput placeholder=" Category Name" type="text" formControlName="categoryName">
+</mat-form-field>
+    <button mat-raised-button color="primary" (click)="add()" type="button" [disabled]="!formGroup.valid">Add</button>
+</form>
+
+
+
+
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  fxFlexFill>
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="sno">
+      <th mat-header-cell *matHeaderCellDef> Group ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.groupId}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.groupName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef> Category </th>
+      <td mat-cell *matCellDef="let element"> {{element.category.name}} </td>
+    </ng-container>
+  
+    
+
+    
+    
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+
+  <a mat-raised-button routerLink="/adminaddmember" color="primary" fxFlexFill>Add Members to Group</a>
+  <br><br>
+  <a mat-raised-button routerLink="/adminviewmemberbygroupid" color="primary" fxFlexFill>View Members By Group ID</a>
+
+</div>

@@ -1,0 +1,27 @@
+.spacer{
+    flex: 1 1 auto;
+}
+.main{
+    background-image: url("https://image.freepik.com/free-vector/abstract-blue-geometric-shapes-background_1035-17545.jpg");
+    background-size:initial;
+    background-repeat: no-repeat;
+}
+.mat-table {
+    overflow-x: scroll;
+  }
+
+.mat-cell,
+.mat-header-cell {
+  word-wrap: initial;
+  display: table-cell;
+  padding: 0px 10px;
+  line-break: unset;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.mat-row,
+.mat-header-row {
+  display: table-row;
+}

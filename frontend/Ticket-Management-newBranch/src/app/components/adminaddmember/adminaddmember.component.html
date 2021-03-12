@@ -1,0 +1,59 @@
+<div class="main">
+    <p>
+        <mat-toolbar color="primary">
+          
+          <span>Add Members to Group</span>
+    
+          <div class="spacer"></div>
+        <a mat-button routerLink="/adminticket">Ticket</a>
+        <a mat-button routerLink="/admingroup">Group</a>
+        <a mat-button routerLink="/admincategory">Category</a>
+        <a mat-button routerLink="/" (click)="logout()">Log Out</a>
+        </mat-toolbar>
+      </p>
+    
+        
+    
+    
+    
+      <form fxLayoutAlign="center center" fxLayout="column" [formGroup]="formGroup">
+        <mat-form-field >
+            <input matInput placeholder="Enter User Id" type="number" formControlName="memberId">
+        </mat-form-field>
+        <mat-form-field >
+            <input matInput placeholder="Enter Group Id" type="number" formControlName="groupId">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="add()" type="button" [disabled]="!formGroup.valid">Add</button>
+        <hr width="17%" size="8" align="center" color="blue">
+        <mat-form-field fxLayoutAlign="end">
+          <input (keyup)="applyFilter($event)" matInput placeholder="Search">
+        </mat-form-field>
+    </form>
+    <hr width="17%" size="8" align="center" color="blue">
+
+    <br>
+   <h3 fxLayoutAlign="center center">Registered Members</h3> 
+    
+    
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  fxFlexFill>
+    
+        
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef> User ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.userId}} </td>
+        </ng-container>
+      
+        
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+      
+       
+        
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    
+    </div>
