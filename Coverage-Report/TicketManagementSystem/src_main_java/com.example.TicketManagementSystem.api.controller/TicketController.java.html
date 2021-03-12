@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TicketController.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem.api.controller</a> &gt; <span class="el_source">TicketController.java</span></div><h1>TicketController.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem.api.controller;
+
+import com.example.TicketManagementSystem.api.dao.models.*;
+import com.example.TicketManagementSystem.api.repository.*;
+import com.example.TicketManagementSystem.api.services.AttachmentService;
+import com.example.TicketManagementSystem.api.services.CommentService;
+import com.example.TicketManagementSystem.api.services.TicketService;
+import com.example.TicketManagementSystem.api.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/ticket&quot;)
+@CrossOrigin(origins = &quot;*&quot;)
+<span class="fc" id="L27">public class TicketController {</span>
+
+    @Autowired
+    TicketRepository ticketRepository;
+
+    @Autowired
+    TicketService ticketService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    AttachmentService attachmentService;
+
+    @GetMapping(&quot;&quot;)
+    public ResponseEntity&lt;List&lt;Ticket&gt;&gt; getTicket(@RequestHeader(&quot;email&quot;) String email) {
+<span class="nc" id="L46">        User user = userService.getUserByEmail(email);</span>
+        List&lt;Ticket&gt; result;
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L49">            return new ResponseEntity&lt;&gt;(new ArrayList&lt;&gt;(), HttpStatus.NOT_FOUND);</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        } else if (user.getType().equals(EnUserType.USER)) {</span>
+            // if Type == User, then show ticket which are opened by that User
+<span class="nc" id="L52">            result = ticketService.getTicketCreatedByUser(user);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        } else if (user.getType().equals(EnUserType.MEMBER)) {</span>
+            // if Type == Member, then show tickets which are in same category
+            // Ticket service -&gt; getTicketWithSameCategory()
+<span class="nc" id="L56">            result = ticketService.getTicketWithSameCategory(user);</span>
+<span class="nc" id="L57">        } else {</span>
+            // if type == Admin, then show all tickets
+<span class="nc" id="L59">            result = ticketRepository.findAll();</span>
+        }
+<span class="nc" id="L61">        return new ResponseEntity&lt;&gt;(result, HttpStatus.OK);</span>
+    }
+
+    @PostMapping(&quot;&quot;)
+    public ResponseEntity&lt;Ticket&gt; createTicket(@RequestHeader(&quot;email&quot;) String email, @RequestBody Ticket ticket) throws ParseException {
+<span class="fc" id="L66">        User user = userService.getUserByEmail(email);</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (user == null) {</span>
+<span class="fc" id="L68">            return new ResponseEntity&lt;&gt;(new Ticket(), HttpStatus.NOT_FOUND);</span>
+        }
+
+<span class="nc" id="L71">        Ticket created_ticket = ticketService.createTicket(user, ticket);</span>
+
+<span class="nc" id="L73">        ticketRepository.save(created_ticket);</span>
+<span class="nc" id="L74">        return new ResponseEntity&lt;&gt;(ticket, HttpStatus.CREATED);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Ticket&gt; getTicketByID(@PathVariable Integer id) {
+<span class="nc" id="L79">        Ticket ticket = ticketService.findByID(id);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (ticket == null) {</span>
+<span class="nc" id="L81">            return new ResponseEntity&lt;&gt;(new Ticket(), HttpStatus.NOT_FOUND);</span>
+        }
+<span class="nc" id="L83">        return new ResponseEntity&lt;Ticket&gt;(ticket, HttpStatus.OK);</span>
+    }
+
+    @PutMapping(&quot;/{id}/comment&quot;)
+    public ResponseEntity&lt;String&gt; createComment(@RequestHeader(&quot;email&quot;) String email, @PathVariable Integer id, @RequestBody Comments comment) {
+<span class="nc" id="L88">        User user = userService.getUserByEmail(email);</span>
+<span class="nc" id="L89">        Ticket ticket = ticketService.findByID(id);</span>
+<span class="nc bnc" id="L90" title="All 4 branches missed.">        if (user == null || ticket == null) {</span>
+<span class="nc" id="L91">            return new ResponseEntity&lt;&gt;(&quot;Not Found&quot;, HttpStatus.NOT_FOUND);</span>
+        } else {
+            // assuming request is from MEMBER
+<span class="nc" id="L94">            System.out.println(&quot;-----------------------------------------------------&quot;);</span>
+<span class="nc" id="L95">            System.out.println(comment.getComment());</span>
+<span class="nc" id="L96">            System.out.println(&quot;-----------------------------------------------------&quot;);</span>
+<span class="nc" id="L97">            commentService.createComment(user, comment.getComment(), ticket);</span>
+<span class="nc" id="L98">            List&lt;Comments&gt; comments = commentService.getAllComments(ticket);</span>
+<span class="nc" id="L99">            ticket.setComments(comments);</span>
+<span class="nc" id="L100">            ticketRepository.save(ticket);</span>
+<span class="nc" id="L101">            return new ResponseEntity&lt;&gt;(comment.getComment(), HttpStatus.CREATED);</span>
+        }
+    }
+
+    @PutMapping(&quot;/{id}/uploadAttachment&quot;)
+    public void uploadAttachment(@RequestHeader(&quot;email&quot;) String email, @PathVariable Integer id,
+                                 @RequestBody MultipartFile file) {
+<span class="nc" id="L108">        System.out.println(&quot;Function Called&quot;);</span>
+<span class="nc" id="L109">        System.out.println(file);</span>
+<span class="nc" id="L110">        User user = userService.getUserByEmail(email);</span>
+<span class="nc" id="L111">        Ticket ticket = ticketService.findByID(id);</span>
+<span class="nc bnc" id="L112" title="All 4 branches missed.">        if (user != null &amp;&amp; ticket != null) {</span>
+<span class="nc" id="L113">            attachmentService.saveAttachment(user, file, ticket);</span>
+        }
+<span class="nc" id="L115">    }</span>
+
+    @GetMapping(&quot;downloadAttachment/{attachment_id}&quot;)
+    public ResponseEntity&lt;Resource&gt; getAttachment(@PathVariable Integer attachment_id) {
+<span class="nc" id="L119">        Attachments attachments = attachmentService.getFile(attachment_id);</span>
+<span class="nc" id="L120">        return ResponseEntity.ok()</span>
+<span class="nc" id="L121">                .contentType(MediaType.parseMediaType(attachments.getAttachmentType()))</span>
+<span class="nc" id="L122">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=\&quot;&quot; + attachments.getAttachmentName() + &quot;\&quot;&quot;)</span>
+<span class="nc" id="L123">                .body(new ByteArrayResource(attachments.getAttachment()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

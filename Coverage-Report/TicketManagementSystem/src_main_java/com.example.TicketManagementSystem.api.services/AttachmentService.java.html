@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AttachmentService.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem.api.services</a> &gt; <span class="el_source">AttachmentService.java</span></div><h1>AttachmentService.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem.api.services;
+
+import com.example.TicketManagementSystem.api.dao.models.Attachments;
+import com.example.TicketManagementSystem.api.dao.models.Ticket;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.AttachmentRepository;
+import com.example.TicketManagementSystem.api.repository.TicketRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L16">public class AttachmentService {</span>
+
+    @Autowired
+    private AttachmentRepository attachmentRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    public Attachments saveAttachment(User user, MultipartFile file, Ticket ticket) {
+        try {
+<span class="nc" id="L26">            Attachments attachment = new Attachments();</span>
+<span class="nc" id="L27">            attachment.setUserId(user);</span>
+<span class="nc" id="L28">            attachment.setAttachment(file.getBytes());</span>
+<span class="nc" id="L29">            attachment.setAttachmentName(file.getOriginalFilename());</span>
+<span class="nc" id="L30">            attachment.setAttachmentType(file.getContentType());</span>
+<span class="nc" id="L31">            attachment.setTicket(ticket);</span>
+<span class="nc" id="L32">            attachmentRepository.save(attachment);</span>
+
+            // save to Ticket
+<span class="nc" id="L35">            List&lt;Attachments&gt; attachments = ticket.getAttachments();</span>
+<span class="nc" id="L36">            attachments.add(attachment);</span>
+<span class="nc" id="L37">            ticket.setAttachments(attachments);</span>
+<span class="nc" id="L38">            ticketRepository.save(ticket);</span>
+
+<span class="nc" id="L40">        } catch (Exception e) {</span>
+<span class="nc" id="L41">            e.printStackTrace();</span>
+        }
+<span class="nc" id="L43">        return null;</span>
+    }
+
+    public Attachments getFile(Integer attachmentId) {
+<span class="nc" id="L47">        List&lt;Attachments&gt; attachments = attachmentRepository.findAll();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        for(Attachments attachment: attachments) {</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            if (attachment.getAttachmentId() == attachmentId) {</span>
+<span class="nc" id="L50">                return attachment;</span>
+            }
+        }
+<span class="nc" id="L53">        return null;</span>
+    }
+
+    public List&lt;Attachments&gt; getFiles() {
+<span class="nc" id="L57">        return attachmentRepository.findAll();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

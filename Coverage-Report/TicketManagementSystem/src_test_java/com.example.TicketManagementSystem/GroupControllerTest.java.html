@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>GroupControllerTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem</a> &gt; <span class="el_source">GroupControllerTest.java</span></div><h1>GroupControllerTest.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.example.TicketManagementSystem.api.controller.CategoryController;
+import com.example.TicketManagementSystem.api.controller.GroupController;
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.Groups;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.CategoryRepository;
+import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.example.TicketManagementSystem.api.repository.GroupRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.example.TicketManagementSystem.api.controller.CategoryController;
+import com.example.TicketManagementSystem.api.controller.TicketController;
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.Ticket;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.CategoryRepository;
+import com.example.TicketManagementSystem.api.repository.EnPriorityType;
+import com.example.TicketManagementSystem.api.repository.EnStatusType;
+import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.example.TicketManagementSystem.api.repository.TicketRepository;
+import com.example.TicketManagementSystem.api.repository.UserRepository;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+//import org.junit.Assert;
+
+
+@ExtendWith(MockitoExtension.class)
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
+<span class="fc" id="L76">public class GroupControllerTest {</span>
+
+	@InjectMocks
+	GroupController groupController;
+
+	@Mock
+	GroupRepository groupRepository;
+	
+	@Autowired
+    private TestRestTemplate restTemplate;
+     
+    @LocalServerPort
+    int randomServerPort;
+
+	@Test
+	public void testFindAll() {
+
+<span class="fc" id="L93">		Groups g1 = new Groups();</span>
+<span class="fc" id="L94">		g1.setGroupId(1);</span>
+<span class="fc" id="L95">		g1.setGroupName(&quot;group1&quot;);</span>
+
+<span class="fc" id="L97">		Category c1 = new Category(1, &quot;IT&quot;);</span>
+<span class="fc" id="L98">		g1.setCategory(c1);</span>
+
+<span class="fc" id="L100">		User user1 = new User();</span>
+<span class="fc" id="L101">		user1.setUserId(1);</span>
+<span class="fc" id="L102">		user1.setName(&quot;user1&quot;);</span>
+<span class="fc" id="L103">		user1.setEmail(&quot;user1@gmail.com&quot;);</span>
+<span class="fc" id="L104">		user1.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L105">		user1.setType(EnUserType.ADMIN);</span>
+
+<span class="fc" id="L107">		User user2 = new User();</span>
+<span class="fc" id="L108">		user2.setUserId(2);</span>
+<span class="fc" id="L109">		user2.setName(&quot;user2&quot;);</span>
+<span class="fc" id="L110">		user2.setEmail(&quot;user2@gmail.com&quot;);</span>
+<span class="fc" id="L111">		user2.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L112">		user2.setType(EnUserType.USER);</span>
+
+<span class="fc" id="L114">		User user3 = new User();</span>
+<span class="fc" id="L115">		user3.setUserId(2);</span>
+<span class="fc" id="L116">		user3.setName(&quot;user3&quot;);</span>
+<span class="fc" id="L117">		user3.setEmail(&quot;user3@gmail.com&quot;);</span>
+<span class="fc" id="L118">		user3.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L119">		user3.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L121">		List&lt;User&gt; list1 = new ArrayList&lt;User&gt;();</span>
+<span class="fc" id="L122">		list1.add(user1);</span>
+<span class="fc" id="L123">		list1.add(user2);</span>
+<span class="fc" id="L124">		list1.add(user3);</span>
+
+<span class="fc" id="L126">		g1.setUser(list1);</span>
+
+<span class="fc" id="L128">		Groups g2 = new Groups(2, &quot;group2&quot;, c1, list1);</span>
+
+<span class="fc" id="L130">		List&lt;Groups&gt; glist = new ArrayList&lt;Groups&gt;();</span>
+<span class="fc" id="L131">		glist.add(g1);</span>
+<span class="fc" id="L132">		glist.add(g2);</span>
+
+<span class="fc" id="L134">		when(groupRepository.findAll()).thenReturn(glist);</span>
+
+<span class="fc" id="L136">		List&lt;Groups&gt; list2 = groupController.getAllGroups();</span>
+<span class="fc" id="L137">		assertThat(list2.size()).isEqualTo(2);</span>
+<span class="fc" id="L138">		assertThat(list2.get(0).getGroupId()).isEqualTo(g1.getGroupId());</span>
+<span class="fc" id="L139">		assertThat(list2.get(0).getGroupName()).isEqualTo(g1.getGroupName());</span>
+<span class="fc" id="L140">		assertThat(list2.get(0).getCategory().getCategoryId()).isEqualTo(g1.getCategory().getCategoryId());</span>
+<span class="fc" id="L141">		assertThat(list2.get(0).getUser().get(0).getUserId()).isEqualTo(g1.getUser().get(0).getUserId());</span>
+
+<span class="fc" id="L143">	}</span>
+
+	@Test
+	public void testCreatGroup() throws URISyntaxException {
+		
+<span class="fc" id="L148">		final String baseUrl = &quot;http://localhost:&quot;+randomServerPort+&quot;/group&quot;;</span>
+<span class="fc" id="L149">        URI uri = new URI(baseUrl);</span>
+        
+<span class="fc" id="L151">        Groups g1 = new Groups();</span>
+<span class="fc" id="L152">		g1.setGroupId(1);</span>
+<span class="fc" id="L153">		g1.setGroupName(&quot;group1&quot;);</span>
+
+<span class="fc" id="L155">		Category c1 = new Category(1, &quot;IT&quot;);</span>
+<span class="fc" id="L156">		g1.setCategory(c1);</span>
+		
+<span class="fc" id="L158">		HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L159">        headers.set(&quot;email&quot;, &quot;true&quot;); </span>
+        
+<span class="fc" id="L161">        HttpEntity&lt;Groups&gt; request = new HttpEntity&lt;&gt;(g1, headers);</span>
+        
+<span class="fc" id="L163">        ResponseEntity&lt;String&gt; result = this.restTemplate.postForEntity(uri, request, String.class);</span>
+<span class="fc" id="L164">        assertThat(result.getStatusCodeValue()).isEqualTo(404);</span>
+		
+
+		/*MockHttpServletRequest request = new MockHttpServletRequest();
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+		when(groupRepository.save(any(Groups.class))).thenReturn(null);
+
+		Groups g1 = new Groups();
+		g1.setGroupId(1);
+		g1.setGroupName(&quot;group1&quot;);
+
+		Category c1 = new Category(1, &quot;IT&quot;);
+		g1.setCategory(c1);
+
+		User user1 = new User();
+		user1.setUserId(1);
+		user1.setName(&quot;user1&quot;);
+		user1.setEmail(&quot;user1@gmail.com&quot;);
+		user1.setPassword(&quot;12345&quot;);
+		user1.setType(EnUserType.ADMIN);
+
+		User user2 = new User();
+		user2.setUserId(2);
+		user2.setName(&quot;user2&quot;);
+		user2.setEmail(&quot;user2@gmail.com&quot;);
+		user2.setPassword(&quot;12345&quot;);
+		user2.setType(EnUserType.MEMBER);
+
+		User user3 = new User();
+		user3.setUserId(2);
+		user3.setName(&quot;user3&quot;);
+		user3.setEmail(&quot;user3@gmail.com&quot;);
+		user3.setPassword(&quot;12345&quot;);
+		user3.setType(EnUserType.MEMBER);
+
+		List&lt;User&gt; list1 = new ArrayList&lt;User&gt;();
+		list1.add(user1);
+		list1.add(user2);
+		list1.add(user3);
+
+		g1.setUser(list1);
+		Groups g2 = new Groups(2, &quot;group2&quot;, c1, list1);
+		List&lt;Groups&gt; glist = new ArrayList&lt;Groups&gt;();
+		glist.add(g1);
+		glist.add(g2);
+		when(groupRepository.findAll()).thenReturn(glist);
+		
+		String email = glist.get(0).getUser().get(0).getEmail();
+
+		ResponseEntity&lt;Groups&gt; responseEntity = groupController.createGroup(email, g1);
+
+		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);*/
+
+<span class="fc" id="L218">	}</span>
+	
+	@Test
+	public void testGetGroupById() {
+		
+<span class="fc" id="L223">		Groups g1 = new Groups();</span>
+<span class="fc" id="L224">		g1.setGroupId(1);</span>
+<span class="fc" id="L225">		g1.setGroupName(&quot;group1&quot;);</span>
+		
+<span class="fc" id="L227">		Groups g2 = new Groups();</span>
+<span class="fc" id="L228">		g2.setGroupId(2);</span>
+<span class="fc" id="L229">		g2.setGroupName(&quot;group2&quot;);</span>
+		
+<span class="fc" id="L231">		List&lt;Groups&gt; glist = new ArrayList&lt;Groups&gt;();</span>
+<span class="fc" id="L232">		glist.add(g1);</span>
+<span class="fc" id="L233">		glist.add(g2);</span>
+
+<span class="fc" id="L235">		when(groupRepository.findAll()).thenReturn(glist);</span>
+		
+<span class="fc" id="L237">		ResponseEntity&lt;Groups&gt; responseEntity = groupController.getGroupByID(g1.getGroupId());</span>
+<span class="fc" id="L238">		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);</span>
+		
+<span class="fc" id="L240">	}</span>
+	
+	@Test
+	public void testGetGroupByIdNotFound() {
+		
+<span class="fc" id="L245">		Groups g1 = new Groups();</span>
+<span class="fc" id="L246">		g1.setGroupId(1);</span>
+<span class="fc" id="L247">		g1.setGroupName(&quot;group1&quot;);</span>
+		
+<span class="fc" id="L249">		Groups g2 = new Groups();</span>
+<span class="fc" id="L250">		g2.setGroupId(2);</span>
+<span class="fc" id="L251">		g2.setGroupName(&quot;group2&quot;);</span>
+		
+<span class="fc" id="L253">		List&lt;Groups&gt; glist = new ArrayList&lt;Groups&gt;();</span>
+<span class="fc" id="L254">		glist.add(g1);</span>
+<span class="fc" id="L255">		glist.add(g2);</span>
+
+<span class="fc" id="L257">		when(groupRepository.findAll()).thenReturn(glist);</span>
+		
+<span class="fc" id="L259">		ResponseEntity&lt;Groups&gt; responseEntity = groupController.getGroupByID(3);</span>
+<span class="fc" id="L260">		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(404);</span>
+		
+<span class="fc" id="L262">	}</span>
+	@Test
+	public void testGetMember() {
+
+<span class="fc" id="L266">		Groups g1 = new Groups();</span>
+<span class="fc" id="L267">		g1.setGroupId(1);</span>
+<span class="fc" id="L268">		g1.setGroupName(&quot;group1&quot;);</span>
+
+<span class="fc" id="L270">		Category c1 = new Category(1, &quot;IT&quot;);</span>
+<span class="fc" id="L271">		g1.setCategory(c1);</span>
+
+<span class="fc" id="L273">		User user1 = new User();</span>
+<span class="fc" id="L274">		user1.setUserId(1);</span>
+<span class="fc" id="L275">		user1.setName(&quot;user1&quot;);</span>
+<span class="fc" id="L276">		user1.setEmail(&quot;user1@gmail.com&quot;);</span>
+<span class="fc" id="L277">		user1.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L278">		user1.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L280">		User user2 = new User();</span>
+<span class="fc" id="L281">		user2.setUserId(2);</span>
+<span class="fc" id="L282">		user2.setName(&quot;user2&quot;);</span>
+<span class="fc" id="L283">		user2.setEmail(&quot;user2@gmail.com&quot;);</span>
+<span class="fc" id="L284">		user2.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L285">		user2.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L287">		User user3 = new User();</span>
+<span class="fc" id="L288">		user3.setUserId(2);</span>
+<span class="fc" id="L289">		user3.setName(&quot;user3&quot;);</span>
+<span class="fc" id="L290">		user3.setEmail(&quot;user3@gmail.com&quot;);</span>
+<span class="fc" id="L291">		user3.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L292">		user3.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L294">		List&lt;User&gt; list1 = new ArrayList&lt;User&gt;();</span>
+<span class="fc" id="L295">		list1.add(user1);</span>
+<span class="fc" id="L296">		list1.add(user2);</span>
+<span class="fc" id="L297">		list1.add(user3);</span>
+
+<span class="fc" id="L299">		g1.setUser(list1);</span>
+<span class="fc" id="L300">		Groups g2 = new Groups(2, &quot;group2&quot;, c1, list1);</span>
+		
+<span class="fc" id="L302">		List&lt;Groups&gt; glist = new ArrayList&lt;Groups&gt;();</span>
+<span class="fc" id="L303">		glist.add(g1);</span>
+<span class="fc" id="L304">		glist.add(g2);</span>
+		
+<span class="fc" id="L306">		when(groupRepository.findAll()).thenReturn(glist);</span>
+		
+<span class="fc" id="L308">		List&lt;User&gt; list2 = groupController.getMembers(1);</span>
+		
+<span class="fc" id="L310">		assertThat(list2.size()).isEqualTo(3);</span>
+		
+<span class="fc" id="L312">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

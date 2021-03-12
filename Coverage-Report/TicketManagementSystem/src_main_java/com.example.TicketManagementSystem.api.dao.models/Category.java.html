@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Category.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem.api.dao.models</a> &gt; <span class="el_source">Category.java</span></div><h1>Category.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem.api.dao.models;
+
+import java.util.List;
+
+import javax.persistence.*;
+
+@Entity
+public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int categoryId;
+
+    private String name;
+
+    public Category(int categoryId, String name) {
+<span class="fc" id="L17">        super();</span>
+<span class="fc" id="L18">        this.categoryId = categoryId;</span>
+<span class="fc" id="L19">        this.name = name;</span>
+<span class="fc" id="L20">    }</span>
+
+
+    public Category() {
+<span class="fc" id="L24">        super();</span>
+        // TODO Auto-generated constructor stub
+<span class="fc" id="L26">    }</span>
+
+
+    public int getCategoryId() {
+<span class="fc" id="L30">        return categoryId;</span>
+    }
+
+
+    public void setCategoryId(int categoryId) {
+<span class="fc" id="L35">        this.categoryId = categoryId;</span>
+<span class="fc" id="L36">    }</span>
+
+
+    public String getName() {
+<span class="fc" id="L40">        return name;</span>
+    }
+
+
+    public void setName(String name) {
+<span class="fc" id="L45">        this.name = name;</span>
+<span class="fc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

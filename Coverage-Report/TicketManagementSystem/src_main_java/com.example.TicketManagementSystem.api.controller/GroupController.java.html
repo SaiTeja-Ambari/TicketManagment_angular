@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>GroupController.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem.api.controller</a> &gt; <span class="el_source">GroupController.java</span></div><h1>GroupController.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem.api.controller;
+
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.Groups;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.example.TicketManagementSystem.api.repository.GroupRepository;
+import com.example.TicketManagementSystem.api.repository.UserRepository;
+import com.example.TicketManagementSystem.api.services.CategoryService;
+import com.example.TicketManagementSystem.api.services.GroupService;
+import com.example.TicketManagementSystem.api.services.RoundRobinService;
+import com.example.TicketManagementSystem.api.services.UserService;
+import com.example.TicketManagementSystem.api.util.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/group&quot;)
+@CrossOrigin(origins = &quot;*&quot;)
+<span class="fc" id="L25">public class GroupController {</span>
+
+    @Autowired
+    GroupRepository groupRepository;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    GroupService groupService;
+
+    @Autowired
+    RoundRobinService roundRobinService;
+
+    @GetMapping
+    public List&lt;Groups&gt; getAllGroups() {
+<span class="fc" id="L44">        return groupRepository.findAll();</span>
+    }
+
+    @PostMapping(&quot;&quot;)
+    public ResponseEntity&lt;Groups&gt; createGroup(@RequestHeader(&quot;email&quot;) String email, @RequestBody Groups group) {
+<span class="fc" id="L49">        User user = userService.getUserByEmail(email);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (user == null) {</span>
+<span class="fc" id="L51">            return new ResponseEntity&lt;&gt;(new Groups(), HttpStatus.NOT_FOUND);</span>
+        }
+<span class="nc" id="L53">        List&lt;User&gt; list = group.getUser();</span>
+<span class="nc" id="L54">        System.out.println(user.getName());</span>
+<span class="nc" id="L55">        list.add(user);</span>
+<span class="nc" id="L56">        group.setUser(list);</span>
+<span class="nc" id="L57">        groupRepository.save(group);</span>
+
+<span class="nc" id="L59">        List&lt;Groups&gt; list1 = user.getGroups();</span>
+<span class="nc" id="L60">        list1.add(group);</span>
+<span class="nc" id="L61">        user.setGroups(list1);</span>
+
+<span class="nc" id="L63">        userRepository.save(user);</span>
+<span class="nc" id="L64">        return new ResponseEntity&lt;&gt;(group, HttpStatus.CREATED);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Groups&gt; getGroupByID(@PathVariable Integer id) {
+<span class="fc" id="L69">        List&lt;Groups&gt; groups = groupRepository.findAll();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for(Groups group: groups) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (group.getGroupId() == id) {</span>
+<span class="fc" id="L72">                return new ResponseEntity&lt;&gt;(group, HttpStatus.OK);</span>
+            }
+        }
+<span class="fc" id="L75">        return new ResponseEntity&lt;&gt;(new Groups(), HttpStatus.NOT_FOUND);</span>
+    }
+
+    @GetMapping(&quot;/{id}/member&quot;)
+    public List&lt;User&gt; getMembers(@PathVariable Integer id) {
+<span class="fc" id="L80">        List&lt;Groups&gt; groups = groupRepository.findAll();</span>
+<span class="fc" id="L81">        List&lt;User&gt; members = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        for(Groups group: groups) {</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if (group.getGroupId() == id) {</span>
+<span class="fc" id="L84">                List&lt;User&gt; users = group.getUser();</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                for(User user: users) {</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">                    if (user.getType().equals(EnUserType.MEMBER)) {</span>
+<span class="fc" id="L87">                        members.add(user);</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L92">        return members;</span>
+    }
+
+    @PutMapping(&quot;/{id}/member&quot;)
+    public ResponseEntity&lt;User&gt; addMember(@PathVariable Integer id, @RequestBody User user) {
+<span class="nc" id="L97">        List&lt;User&gt; users = userRepository.findAll();</span>
+<span class="nc" id="L98">        User member = null;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        for(User u: users) {</span>
+
+            // finding the Member to add in the group and storing in member variable
+<span class="nc bnc" id="L102" title="All 4 branches missed.">            if (u.getUserId() == user.getUserId() &amp;&amp; u.getType().equals(EnUserType.MEMBER)) {</span>
+<span class="nc" id="L103">                member = u;</span>
+<span class="nc" id="L104">                break;</span>
+            }
+        }
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (member == null) {</span>
+<span class="nc" id="L108">            return new ResponseEntity&lt;&gt;(new User(), HttpStatus.NOT_FOUND);</span>
+        }
+
+<span class="nc" id="L111">        Groups group = groupService.getGroupByID(id);</span>
+
+        // check if this user and group is already connected -&gt; Not Done yet
+
+<span class="nc" id="L115">        List&lt;User&gt; group_member = group.getUser();</span>
+<span class="nc" id="L116">        group_member.add(member);</span>
+<span class="nc" id="L117">        group.setUser(group_member);</span>
+<span class="nc" id="L118">        groupRepository.save(group);</span>
+
+<span class="nc" id="L120">        List&lt;Groups&gt; user_group_list = member.getGroups();</span>
+<span class="nc" id="L121">        user_group_list.add(group);</span>
+<span class="nc" id="L122">        member.setGroups(user_group_list);</span>
+<span class="nc" id="L123">        userRepository.save(member);</span>
+
+        // Every Time Any Member is Added to a Group, add it to the RoundRobin Table
+
+<span class="nc" id="L127">        roundRobinService.addMember(member.getGroups().get(0).getCategory(), member);</span>
+<span class="nc" id="L128">        return new ResponseEntity&lt;&gt;(member, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

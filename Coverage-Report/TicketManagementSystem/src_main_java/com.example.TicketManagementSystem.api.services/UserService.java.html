@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem.api.services</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem.api.services;
+
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.example.TicketManagementSystem.api.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L14">public class UserService {</span>
+
+    @Autowired
+    UserRepository userRepository;
+
+    public User getUserByEmail(String email) {
+<span class="fc" id="L20">        List&lt;User&gt; users = userRepository.findAll();</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        for(User user: users) {</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">            if (user.getEmail().equals(email)) {</span>
+<span class="nc" id="L23">                return user;</span>
+            }
+        }
+<span class="fc" id="L26">        return null;</span>
+    }
+
+    public User getUserByID(int id) {
+<span class="nc" id="L30">        List&lt;User&gt; users = userRepository.findAll();</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        for(User user: users) {</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">            if (user.getUserId() == id) {</span>
+<span class="nc" id="L33">                return user;</span>
+            }
+        }
+<span class="nc" id="L36">        return null;</span>
+    }
+
+
+    public static Category getCategoryOfMember(User user) {
+        // first create groups
+<span class="nc" id="L42">        return new Category();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

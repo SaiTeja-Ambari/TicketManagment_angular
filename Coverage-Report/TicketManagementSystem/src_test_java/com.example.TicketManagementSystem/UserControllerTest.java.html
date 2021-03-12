@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>UserControllerTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem</a> &gt; <span class="el_source">UserControllerTest.java</span></div><h1>UserControllerTest.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.example.TicketManagementSystem.api.controller.CategoryController;
+import com.example.TicketManagementSystem.api.controller.UserController;
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.Groups;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.CategoryRepository;
+import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.example.TicketManagementSystem.api.repository.UserRepository;
+
+@ExtendWith(MockitoExtension.class)
+<span class="fc" id="L31">public class UserControllerTest {</span>
+
+	@InjectMocks
+	UserController userController;
+
+	@Mock
+	UserRepository userRepository;
+
+	@Test
+	public void testAddUser() {
+<span class="fc" id="L41">		MockHttpServletRequest request = new MockHttpServletRequest();</span>
+<span class="fc" id="L42">		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));</span>
+
+<span class="fc" id="L44">		when(userRepository.save(any(User.class))).thenReturn(null);</span>
+<span class="fc" id="L45">		User user = new User();</span>
+<span class="fc" id="L46">		user.setUserId(1);</span>
+<span class="fc" id="L47">		user.setName(&quot;user1&quot;);</span>
+<span class="fc" id="L48">		user.setEmail(&quot;user1@gmail.com&quot;);</span>
+<span class="fc" id="L49">		user.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L50">		user.setType(EnUserType.ADMIN);</span>
+
+<span class="fc" id="L52">		ResponseEntity&lt;User&gt; responseEntity = userController.registerUser(user);</span>
+
+<span class="fc" id="L54">		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);</span>
+<span class="fc" id="L55">	}</span>
+
+	@Test
+	public void testloginNotFound() {
+
+<span class="fc" id="L60">		MockHttpServletRequest request = new MockHttpServletRequest();</span>
+<span class="fc" id="L61">		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));</span>
+
+		//when(userRepository.save(any(User.class))).thenReturn(null);
+
+<span class="fc" id="L65">		User user3 = new User();</span>
+<span class="fc" id="L66">		user3.setUserId(2);</span>
+<span class="fc" id="L67">		user3.setName(&quot;user3&quot;);</span>
+<span class="fc" id="L68">		user3.setEmail(&quot;user3@gmail.com&quot;);</span>
+<span class="fc" id="L69">		user3.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L70">		user3.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L72">		ResponseEntity&lt;User&gt; responseEntity = userController.loginUser(user3);</span>
+
+<span class="fc" id="L74">		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(404);</span>
+
+<span class="fc" id="L76">	}</span>
+
+	@Test
+	public void testloginFound() {
+<span class="fc" id="L80">		MockHttpServletRequest request = new MockHttpServletRequest();</span>
+<span class="fc" id="L81">		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));</span>
+
+		//when(userRepository.save(any(User.class))).thenReturn(null);
+
+<span class="fc" id="L85">		User user3 = new User();</span>
+<span class="fc" id="L86">		user3.setUserId(2);</span>
+<span class="fc" id="L87">		user3.setName(&quot;user3&quot;);</span>
+<span class="fc" id="L88">		user3.setEmail(&quot;user3@gmail.com&quot;);</span>
+<span class="fc" id="L89">		user3.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L90">		user3.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L92">		List&lt;User&gt; list1 = new ArrayList&lt;User&gt;();</span>
+<span class="fc" id="L93">		list1.add(user3);</span>
+
+<span class="fc" id="L95">		when(userRepository.findAll()).thenReturn(list1);</span>
+<span class="fc" id="L96">		List&lt;User&gt; list2 = userController.getAllMembers();</span>
+
+<span class="fc" id="L98">		ResponseEntity&lt;User&gt; responseEntity = userController.loginUser(list2.get(0));</span>
+<span class="fc" id="L99">		assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);</span>
+
+<span class="fc" id="L101">	}</span>
+
+	@Test
+	public void testFindAll() {
+
+<span class="fc" id="L106">		User user1 = new User();</span>
+<span class="fc" id="L107">		user1.setUserId(1);</span>
+<span class="fc" id="L108">		user1.setName(&quot;user1&quot;);</span>
+<span class="fc" id="L109">		user1.setEmail(&quot;user1@gmail.com&quot;);</span>
+<span class="fc" id="L110">		user1.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L111">		user1.setType(EnUserType.ADMIN);</span>
+
+<span class="fc" id="L113">		User user2 = new User();</span>
+<span class="fc" id="L114">		user2.setUserId(2);</span>
+<span class="fc" id="L115">		user2.setName(&quot;user2&quot;);</span>
+<span class="fc" id="L116">		user2.setEmail(&quot;user2@gmail.com&quot;);</span>
+<span class="fc" id="L117">		user2.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L118">		user2.setType(EnUserType.USER);</span>
+
+<span class="fc" id="L120">		User user3 = new User();</span>
+<span class="fc" id="L121">		user3.setUserId(2);</span>
+<span class="fc" id="L122">		user3.setName(&quot;user3&quot;);</span>
+<span class="fc" id="L123">		user3.setEmail(&quot;user3@gmail.com&quot;);</span>
+<span class="fc" id="L124">		user3.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L125">		user3.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L127">		List&lt;User&gt; list1 = new ArrayList&lt;User&gt;();</span>
+<span class="fc" id="L128">		list1.add(user1);</span>
+<span class="fc" id="L129">		list1.add(user2);</span>
+<span class="fc" id="L130">		list1.add(user3);</span>
+
+<span class="fc" id="L132">		when(userRepository.findAll()).thenReturn(list1);</span>
+<span class="fc" id="L133">		List&lt;User&gt; list2 = userController.getAll();</span>
+
+<span class="fc" id="L135">		assertThat(list2.size()).isEqualTo(3);</span>
+<span class="fc" id="L136">		assertThat(list2.get(0).getName()).isEqualTo(user1.getName());</span>
+<span class="fc" id="L137">		assertThat(list2.get(0).getUserId()).isEqualTo(user1.getUserId());</span>
+<span class="fc" id="L138">		assertThat(list2.get(0).getEmail()).isEqualTo(user1.getEmail());</span>
+<span class="fc" id="L139">		assertThat(list2.get(0).getPassword()).isEqualTo(user1.getPassword());</span>
+<span class="fc" id="L140">		assertThat(list2.get(0).getType()).isEqualTo(user1.getType());</span>
+
+<span class="fc" id="L142">	}</span>
+
+	@Test
+	public void testFindAllMember() {
+
+<span class="fc" id="L147">		User user3 = new User();</span>
+<span class="fc" id="L148">		user3.setUserId(2);</span>
+<span class="fc" id="L149">		user3.setName(&quot;user3&quot;);</span>
+<span class="fc" id="L150">		user3.setEmail(&quot;user3@gmail.com&quot;);</span>
+<span class="fc" id="L151">		user3.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L152">		user3.setType(EnUserType.MEMBER);</span>
+
+<span class="fc" id="L154">		List&lt;User&gt; list1 = new ArrayList&lt;User&gt;();</span>
+<span class="fc" id="L155">		list1.add(user3);</span>
+
+<span class="fc" id="L157">		when(userRepository.findAll()).thenReturn(list1);</span>
+<span class="fc" id="L158">		List&lt;User&gt; list2 = userController.getAllMembers();</span>
+
+<span class="fc" id="L160">		assertThat(list2.size()).isEqualTo(1);</span>
+<span class="fc" id="L161">		assertThat(list2.get(0).getName()).isEqualTo(user3.getName());</span>
+<span class="fc" id="L162">		assertThat(list2.get(0).getUserId()).isEqualTo(user3.getUserId());</span>
+<span class="fc" id="L163">		assertThat(list2.get(0).getEmail()).isEqualTo(user3.getEmail());</span>
+<span class="fc" id="L164">		assertThat(list2.get(0).getPassword()).isEqualTo(user3.getPassword());</span>
+<span class="fc" id="L165">		assertThat(list2.get(0).getType()).isEqualTo(user3.getType());</span>
+
+<span class="fc" id="L167">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

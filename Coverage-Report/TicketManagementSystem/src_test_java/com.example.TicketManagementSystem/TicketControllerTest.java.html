@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TicketControllerTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem</a> &gt; <span class="el_source">TicketControllerTest.java</span></div><h1>TicketControllerTest.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.example.TicketManagementSystem.api.controller.CategoryController;
+import com.example.TicketManagementSystem.api.controller.TicketController;
+import com.example.TicketManagementSystem.api.dao.models.Attachments;
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.Comments;
+import com.example.TicketManagementSystem.api.dao.models.Ticket;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.CategoryRepository;
+import com.example.TicketManagementSystem.api.repository.EnPriorityType;
+import com.example.TicketManagementSystem.api.repository.EnStatusType;
+import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.example.TicketManagementSystem.api.repository.TicketRepository;
+import com.example.TicketManagementSystem.api.repository.UserRepository;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+//import org.junit.Assert;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+
+@ExtendWith(MockitoExtension.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+<span class="fc" id="L54">public class TicketControllerTest {</span>
+
+	@InjectMocks
+	TicketController ticketController;
+
+	@Mock
+	TicketRepository ticketRepository;
+
+	@LocalServerPort
+	int randomServerPort;
+
+	@Autowired
+	private TestRestTemplate restTemplate;
+
+	@Mock
+	UserRepository userRepository;
+
+	@Test
+	public void testCreateTicket1() throws URISyntaxException, ParseException {
+		
+<span class="fc" id="L74">		final String baseUrl = &quot;http://localhost:&quot;+randomServerPort+&quot;/ticket&quot;;</span>
+<span class="fc" id="L75">		URI uri = new URI(baseUrl);</span>
+		
+<span class="fc" id="L77">		Ticket t1 = new Ticket();</span>
+<span class="fc" id="L78">		t1.setTicketId(1);</span>
+<span class="fc" id="L79">		t1.setStatus(EnStatusType.OPEN);</span>
+<span class="fc" id="L80">		t1.setPriority(EnPriorityType.MEDIUM);</span>
+<span class="fc" id="L81">		t1.setTitle(&quot;First ticket&quot;);</span>
+<span class="fc" id="L82">		t1.setStartDate(new SimpleDateFormat(&quot;dd/MM/YYYY&quot;).parse(&quot;10/04/2021&quot;));</span>
+<span class="fc" id="L83">		t1.setDueDate(new SimpleDateFormat(&quot;dd/MM/YYYY&quot;).parse(&quot;10/04/2021&quot;));</span>
+<span class="fc" id="L84">		t1.setDescription(&quot;This is First Ticket&quot;);</span>
+<span class="fc" id="L85">		Category c1 = new Category(1, &quot;IT&quot;);</span>
+<span class="fc" id="L86">		t1.setCategory(c1);</span>
+		
+<span class="fc" id="L88">		Comments co1 = new Comments();</span>
+<span class="fc" id="L89">		co1.setCommentId(1);</span>
+<span class="fc" id="L90">		co1.setComment(&quot;This is first comments&quot;);</span>
+<span class="fc" id="L91">		co1.setTicket(t1);</span>
+		
+		
+<span class="fc" id="L94">		User user1 = new User();</span>
+<span class="fc" id="L95">		user1.setUserId(1);</span>
+<span class="fc" id="L96">		user1.setName(&quot;user1&quot;);</span>
+<span class="fc" id="L97">		user1.setEmail(&quot;user1@gmail.com&quot;);</span>
+<span class="fc" id="L98">		user1.setPassword(&quot;12345&quot;);</span>
+<span class="fc" id="L99">		user1.setType(EnUserType.MEMBER);</span>
+		
+<span class="fc" id="L101">		co1.setUserId(user1);</span>
+		
+<span class="fc" id="L103">		Comments co2 = new Comments(2,user1,&quot;This is second comments&quot;,t1);</span>
+<span class="fc" id="L104">		List&lt;Comments&gt; list = new ArrayList&lt;Comments&gt;();</span>
+<span class="fc" id="L105">		list.add(co1);</span>
+<span class="fc" id="L106">		list.add(co2);</span>
+		
+<span class="fc" id="L108">		t1.setComments(list);</span>
+		
+<span class="fc" id="L110">		Attachments a1 = new Attachments();</span>
+<span class="fc" id="L111">		a1.setAttachmentId(1);</span>
+<span class="fc" id="L112">		a1.setAttachmentName(&quot;file&quot;);</span>
+<span class="fc" id="L113">		a1.setAttachmentType(&quot;JPG&quot;);</span>
+<span class="fc" id="L114">		a1.setTicket(t1);</span>
+<span class="fc" id="L115">		a1.setUserId(user1);</span>
+		
+<span class="fc" id="L117">		List&lt;Attachments&gt; list1 = new ArrayList&lt;Attachments&gt;();</span>
+<span class="fc" id="L118">		list1.add(a1);</span>
+		
+		
+<span class="fc" id="L121">		HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L122">		headers.set(&quot;email&quot;, &quot;true&quot;);</span>
+		
+<span class="fc" id="L124">		HttpEntity&lt;Ticket&gt; request = new HttpEntity&lt;&gt;(t1,headers);</span>
+<span class="fc" id="L125">		ResponseEntity&lt;String&gt; result = this.restTemplate.postForEntity(uri, request, String.class);</span>
+<span class="fc" id="L126">		assertThat(result.getStatusCodeValue()).isEqualTo(404);</span>
+		//Assert.assertEquals(201, result.getStatusCodeValue());
+		
+		
+<span class="fc" id="L130">	}</span>
+	
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>CategoryControllerTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem</a> &gt; <span class="el_source">CategoryControllerTest.java</span></div><h1>CategoryControllerTest.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.example.TicketManagementSystem.api.controller.CategoryController;
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.repository.CategoryRepository;
+
+@ExtendWith(MockitoExtension.class)
+<span class="fc" id="L25">public class CategoryControllerTest {</span>
+	
+	@InjectMocks
+	CategoryController categoryController;
+	
+	@Mock
+	CategoryRepository categoryRepository;
+
+	@Test
+	public void testFindAll() {
+		
+<span class="fc" id="L36">		Category category1 = new Category(1,&quot;IT&quot;);</span>
+<span class="fc" id="L37">		Category category2 = new Category(2,&quot;Sales&quot;);</span>
+<span class="fc" id="L38">		Category category3 = new Category();</span>
+<span class="fc" id="L39">		category3.setCategoryId(3);</span>
+<span class="fc" id="L40">		category3.setName(&quot;Marketing&quot;);</span>
+		
+<span class="fc" id="L42">		List&lt;Category&gt; list1= new ArrayList&lt;Category&gt;();</span>
+<span class="fc" id="L43">		list1.add(category1);</span>
+<span class="fc" id="L44">		list1.add(category2);</span>
+<span class="fc" id="L45">		list1.add(category3);</span>
+		
+<span class="fc" id="L47">		when(categoryRepository.findAll()).thenReturn(list1);</span>
+		
+<span class="fc" id="L49">		List&lt;Category&gt; list2 = categoryController.getCategory();</span>
+		
+<span class="fc" id="L51">		assertThat(list2.size()).isEqualTo(3);</span>
+<span class="fc" id="L52">		assertThat(list2.get(0).getName()).isEqualTo(category1.getName());</span>
+<span class="fc" id="L53">		assertThat(list2.get(1).getName()).isEqualTo(category2.getName());</span>
+<span class="fc" id="L54">		assertThat(list2.get(0).getCategoryId()).isEqualTo(category1.getCategoryId());</span>
+<span class="fc" id="L55">		assertThat(list2.get(1).getCategoryId()).isEqualTo(category2.getCategoryId());</span>
+<span class="fc" id="L56">	}</span>
+	
+	@Test
+	public void testAddCategory() {
+<span class="fc" id="L60">		MockHttpServletRequest request = new MockHttpServletRequest();</span>
+<span class="fc" id="L61">        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));</span>
+        
+<span class="fc" id="L63">        when(categoryRepository.save(any(Category.class))).thenReturn(null);</span>
+<span class="fc" id="L64">        Category category1 = new Category(1,&quot;IT&quot;);</span>
+<span class="fc" id="L65">        ResponseEntity&lt;Category&gt; responseEntity = categoryController.createCategory(category1);</span>
+        
+<span class="fc" id="L67">        assertThat(responseEntity.getStatusCodeValue()).isEqualTo(200);</span>
+<span class="fc" id="L68">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>

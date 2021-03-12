@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TicketService.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</a> &gt; <a href="../../index.html" class="el_group">TicketManagementSystem</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">com.example.TicketManagementSystem.api.services</a> &gt; <span class="el_source">TicketService.java</span></div><h1>TicketService.java</h1><pre class="source lang-java linenums">package com.example.TicketManagementSystem.api.services;
+
+import com.example.TicketManagementSystem.api.dao.models.Category;
+import com.example.TicketManagementSystem.api.dao.models.Groups;
+import com.example.TicketManagementSystem.api.dao.models.Ticket;
+import com.example.TicketManagementSystem.api.dao.models.User;
+import com.example.TicketManagementSystem.api.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+@Service
+<span class="fc" id="L16">public class TicketService {</span>
+
+    @Autowired
+    TicketRepository ticketRepository;
+
+    @Autowired
+    GroupRepository groupRepository;
+
+    @Autowired
+    RoundRobinService roundRobinService;
+
+    public List&lt;Ticket&gt; getTicketCreatedByUser(User user) {
+<span class="nc" id="L28">        List&lt;Ticket&gt; tickets = ticketRepository.findAll();</span>
+<span class="nc" id="L29">        List&lt;Ticket&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        for(Ticket ticket: tickets) {</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            if (ticket.getCreatedByUserId().getUserId() == user.getUserId()) {</span>
+<span class="nc" id="L32">                result.add(ticket);</span>
+            }
+        }
+<span class="nc" id="L35">        return result;</span>
+    }
+
+    public List&lt;Ticket&gt; getTicketWithSameCategory(User user) {
+<span class="nc" id="L39">        List&lt;Groups&gt; groups = user.getGroups();</span>
+<span class="nc" id="L40">        List&lt;Ticket&gt; result = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="nc" id="L42">            int category_id = groups.get(0).getCategory().getCategoryId();</span>
+<span class="nc" id="L43">            List&lt;Ticket&gt; tickets = ticketRepository.findAll();</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            for(Ticket ticket: tickets) {</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">                if (ticket.getCategory().getCategoryId() == category_id) {</span>
+<span class="nc" id="L46">                    result.add(ticket);</span>
+                }
+            }
+<span class="nc" id="L49">            return result;</span>
+<span class="nc" id="L50">        } catch (Exception e) {</span>
+<span class="nc" id="L51">            e.printStackTrace();</span>
+<span class="nc" id="L52">            return new ArrayList&lt;&gt;();</span>
+        }
+    }
+
+    public Ticket findByID(Integer id) {
+<span class="nc" id="L57">        List&lt;Ticket&gt; tickets = ticketRepository.findAll();</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        for(Ticket ticket: tickets) {</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (ticket.getTicketId() == id) {</span>
+<span class="nc" id="L60">                return ticket;</span>
+            }
+        }
+<span class="nc" id="L63">        return null;</span>
+    }
+
+    public Ticket createTicket(User user, Ticket ticket) throws ParseException {
+<span class="nc" id="L67">        SimpleDateFormat format = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="nc" id="L68">        Calendar c = Calendar.getInstance();</span>
+<span class="nc" id="L69">        c.setTime(new Date());</span>
+<span class="nc" id="L70">        String curr_date = format.format(c.getTime());</span>
+<span class="nc" id="L71">        c.add(Calendar.DATE, 7);</span>
+<span class="nc" id="L72">        String due_date = format.format(c.getTime());</span>
+<span class="nc" id="L73">        ticket.setStartDate(format.parse(curr_date));</span>
+<span class="nc" id="L74">        ticket.setDueDate(format.parse(due_date));</span>
+
+<span class="nc" id="L76">        ticket.setStatus(EnStatusType.OPEN);</span>
+<span class="nc" id="L77">        ticket.setPriority(EnPriorityType.MEDIUM);</span>
+
+<span class="nc" id="L79">        ticket.setCreatedByUserId(user);</span>
+
+<span class="nc" id="L81">        Category category = ticket.getCategory();</span>
+
+        // assign to a user in this category -&gt; currently random allocation
+
+//        List&lt;Groups&gt; groups = groupRepository.findAll();
+//        List&lt;User&gt; members = new ArrayList&lt;&gt;();
+//        for(Groups group: groups) {
+//            List&lt;User&gt; users = group.getUser();
+//            for(User u: users) {
+//                if (u.getType().equals(EnUserType.MEMBER)) {
+//                    members.add(u);
+//                }
+//            }
+//        }
+
+<span class="nc" id="L96">        User member = roundRobinService.assignTicket(category.getCategoryId());</span>
+
+//        int max = members.size();
+//        int min = 0;
+//        Random random = new Random();
+//        int index = random.nextInt(max-min)+min;
+//
+<span class="nc" id="L103">        ticket.setUser(member);</span>
+<span class="nc" id="L104">        return ticket;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>com.example.TicketManagementSystem (12-Mar-2021 12:05:36 am)</div></body></html>
